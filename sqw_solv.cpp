@@ -7,6 +7,14 @@ const int SS_NO_ROOTS  =  0;
 const int SS_ONE_ROOT  =  1;
 const int SS_TWO_ROOTS =  2;
 
+const int firstTest = 0;
+
+const int a_coeff     = 0;
+const int b_coeff     = 1;
+const int c_coeff     = 2;
+const int x1_expected = 3;
+const int x2_expected = 4;
+
 int SolveLine (double b, double c, double *x1);
 int SolveSquare (double a, double b, double c, double *x1, double *x2);
 
@@ -16,24 +24,52 @@ void input (double *a, double *b, double *c);
 void output(int nRoots, double x1, double x2);
 void BufferClear();
 
+void swapDouble (double *a, double *b);
+
+int Test(int nTest, double a, double b, double c, double x1_expected, double x2_expected, int nRoots_expected);
+
+struct coeffsStruct
+{
+    double a;
+    double b;
+    double c;
+    double x1_expected;
+    double x2_expected;
+    int nRoots_expected;
+};
+
+void CreateTests (coeffsStruct tests[]);
+
+void AllTests(coeffsStruct tests[], int sz);
+
+
 int main()
 {
-    double a, b, c;
-    a = b = c = NAN;
+    //double a = NAN, b = NAN, c = NAN;
 
-    input(&a, &b, &c);
+    //input(&a, &b, &c);
 
-    assert(isfinite(a));
-    assert(isfinite(b));
-    assert(isfinite(c));
+    //assert(isfinite(a));
+    //assert(isfinite(b));
+    //assert(isfinite(c));
 
-    int nRoots = 0;
-    double x1, x2;
-    x1 = x2 = NAN;
+    //int nRoots = 0;
+    //double x1 = NAN, x2 = NAN;
 
-    nRoots = SolveSquare(a, b, c, &x1, &x2);
+    //nRoots = SolveSquare(a, b, c, &x1, &x2);
 
-    output(nRoots, x1, x2);
+    //output(nRoots, x1, x2);
+
+    coeffsStruct tests[1] = {};
+
+    int sz = 1;
+
+    CreateTests(tests);
+
+    AllTests(tests, sz);
+
+
+    //Test(1, 1, -3, 2, 3, 1, 2);
 }
 
 void input (double *a, double *b, double *c)
@@ -119,4 +155,50 @@ void BufferClear()
 {
     while (getchar() != '\n' && getchar() != EOF) {}
 }
+
+int Test(int nTest, double a, double b, double c, double x1_ans, double x2_ans, int nRoots_ans)
+{
+    double x1 = NAN, x2 = NAN;
+
+    int nRoots = SolveSquare(a, b, c, &x1, &x2);
+
+    if (isfinite(x2_ans) && x1_ans < x2_ans) {
+        swapDouble(&x1_ans, &x2_ans);
+    }
+
+    if (nRoots != nRoots_ans || !CompareEps(x1-x1_ans) || !CompareEps(x2-x2_ans)) {
+        printf("Error Test %d: a = %lg, b = %lg, c = %lg, nRoots = %d, x1 = %lg, x2 = %lg\n"
+               "Expected: nRoots = %d, x1 = %lg, x2 = %lg", nTest, a, b, c, nRoots, x1, x2,
+               nRoots_ans, x1_ans, x2_ans);
+        return -1;
+    }
+    return 0;
+}
+
+void CreateTests (coeffsStruct tests[])
+{
+    tests[firstTest] = {1, -3, 2, 1, 2, 2};
+}
+
+ void AllTests(coeffsStruct tests[], int sz)
+ {
+       for (int i = 0; i < sz; ++i) {
+            if (Test(i+1, tests[i].a, tests[i].b, tests[i].c, tests[i].x1_expected,
+                tests[i].x2_expected, tests[i].nRoots_expected) == 0) {
+                printf("Test %d completed successfully\n", i+1);
+            }
+       }
+ }
+
+ void swapDouble (double *a, double *b)
+ {
+    double temp = 0;
+    temp = *a;
+    *a = *b;
+    *b = temp;
+ }
+
+
+
+
 
