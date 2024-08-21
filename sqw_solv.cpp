@@ -3,9 +3,9 @@
 #include <math.h>
 
 const int SS_INF_ROOTS = -1;
-const int SS_NO_ROOTS = 0;
-const int SS_ONE_ROOT = 1;
-const int SS_TWO_ROOTS = 2;
+const int SS_NO_ROOTS  =  0;
+const int SS_ONE_ROOT  =  1;
+const int SS_TWO_ROOTS =  2;
 
 int SolveLine (double b, double c, double *x1);
 int SolveSquare (double a, double b, double c, double *x1, double *x2);
@@ -14,6 +14,7 @@ bool CompareEps(double a);
 
 void input (double *a, double *b, double *c);
 void output(int nRoots, double x1, double x2);
+void BufferClear();
 
 int main()
 {
@@ -41,9 +42,11 @@ void input (double *a, double *b, double *c)
     assert(b);
     assert(c);
     assert(a != b && a != c && b != c);
+
     printf("Enter the coefficients:\n");
+
     while (scanf("%lg %lg %lg", a, b, c) != 3) {
-        while (getchar() != '\n' && getchar() != EOF) {}
+        BufferClear();
         printf("Error, Enter three coefficients:\n");
     }
 
@@ -112,4 +115,8 @@ int SolveSquare (double a, double b, double c, double *x1, double *x2)
     return SS_TWO_ROOTS;
 }
 
+void BufferClear()
+{
+    while (getchar() != '\n' && getchar() != EOF) {}
+}
 
