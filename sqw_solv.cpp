@@ -7,8 +7,6 @@ const int SS_NO_ROOTS  =  0;
 const int SS_ONE_ROOT  =  1;
 const int SS_TWO_ROOTS =  2;
 
-const int firstTest = 0;
-
 const int a_coeff     = 0;
 const int b_coeff     = 1;
 const int c_coeff     = 2;
@@ -60,9 +58,8 @@ int main()
 
     //output(nRoots, x1, x2);
 
-    coeffsStruct tests[1] = {};
-
-    int sz = 1;
+    int sz = 6;
+    coeffsStruct tests[6] = {};
 
     CreateTests(tests);
 
@@ -166,9 +163,10 @@ int Test(int nTest, double a, double b, double c, double x1_ans, double x2_ans, 
         swapDouble(&x1_ans, &x2_ans);
     }
 
-    if (nRoots != nRoots_ans || !CompareEps(x1-x1_ans) || !CompareEps(x2-x2_ans)) {
+    if (nRoots != nRoots_ans || (!(!isfinite(x1) && !isfinite(x1_ans)) && !CompareEps(x1-x1_ans)) ||
+       (!(!isfinite(x2) && !isfinite(x2_ans)) && !CompareEps(x2-x2_ans))) {
         printf("Error Test %d: a = %lg, b = %lg, c = %lg, nRoots = %d, x1 = %lg, x2 = %lg\n"
-               "Expected: nRoots = %d, x1 = %lg, x2 = %lg", nTest, a, b, c, nRoots, x1, x2,
+               "Expected: nRoots = %d, x1 = %lg, x2 = %lg\n", nTest, a, b, c, nRoots, x1, x2,
                nRoots_ans, x1_ans, x2_ans);
         return -1;
     }
@@ -177,7 +175,20 @@ int Test(int nTest, double a, double b, double c, double x1_ans, double x2_ans, 
 
 void CreateTests (coeffsStruct tests[])
 {
-    tests[firstTest] = {1, -3, 2, 1, 2, 2};
+    const int test1 = 0;
+    const int test2 = 1;
+    const int test3 = 2;
+    const int test4 = 3;
+    const int test5 = 4;
+    const int test6 = 5;
+
+
+    tests[test1] = {1, -3, 2, 1, 2, 2}; //два корня
+    tests[test2] = {0, 0, 0, NAN, NAN, SS_INF_ROOTS}; //бесконечно корней
+    tests[test3] = {2, 4, 2, -1, NAN, 1}; //1 корень, D = 0
+    tests[test4] = {18, 4, 41, NAN, NAN, 0}; //0 корней, D < 0
+    tests[test5] = {0, 16, 21, -1.3125, NAN, 1}; //линейное
+    tests[test6] = {2.1, 3.85, -16.84, 2.059795, -3.893129, 2}; //дробные
 }
 
  void AllTests(coeffsStruct tests[], int sz)
