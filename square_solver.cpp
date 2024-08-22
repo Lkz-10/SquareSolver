@@ -2,36 +2,6 @@
 #include <TXLib.h>
 #include <math.h>
 
-const int SS_INF_ROOTS = -1;
-const int SS_NO_ROOTS  =  0;
-const int SS_ONE_ROOT  =  1;
-const int SS_TWO_ROOTS =  2;
-
-const int sz = 10;
-
-const int a_coeff     = 0;
-const int b_coeff     = 1;
-const int c_coeff     = 2;
-const int x1_expected = 3;
-const int x2_expected = 4;
-
-int SolveSquare (double a, double b, double c, double *x1, double *x2);
-int SolveLine (double b, double c, double *x1);
-int SolveAB (double a, double b, double* x1, double* x2);
-int SolveAC (double a, double c, double* x1, double* x2);
-
-bool CompareZero(double a);
-
-int choose();
-
-void input (double *a, double *b, double *c);
-void output(int nRoots, double x1, double x2);
-void BufferClear();
-
-void swapDouble (double *a, double *b);
-
-int Test(int nTest, struct coeffsStruct structData);
-
 /**
 * @brief                 Структура коэффициентов и корней
 * @param a               Главный коэффициент уравнения
@@ -51,7 +21,29 @@ struct coeffsStruct
     int nRoots_expected;
 };
 
-void CreateTests (coeffsStruct tests[]);
+const int SS_INF_ROOTS = -1;
+const int SS_NO_ROOTS  =  0;
+const int SS_ONE_ROOT  =  1;
+const int SS_TWO_ROOTS =  2;
+
+int SolveSquare (double a, double b, double c, double *x1, double *x2);
+int SolveLine (double b, double c, double *x1);
+int SolveAB (double a, double b, double* x1, double* x2);
+int SolveAC (double a, double c, double* x1, double* x2);
+
+bool CompareZero(double a);
+
+int choose();
+
+void input (double *a, double *b, double *c);
+void output(int nRoots, double x1, double x2);
+void BufferClear();
+
+void swapDouble (double *a, double *b);
+
+int Test(int nTest, struct coeffsStruct structData);
+
+void CreateTests ();
 
 void RunAllTests(coeffsStruct tests[]);
 
@@ -79,17 +71,8 @@ int main()
 
     } else {
 
-        coeffsStruct tests[sz] = {};
-
-        CreateTests(tests);
-
-        RunAllTests(tests);
+        CreateTests();
     }
-
-
-
-
-
 }
 
 /**
@@ -125,8 +108,10 @@ int SolveSquare (double a, double b, double c, double* x1, double* x2)
         return SS_ONE_ROOT;
     }
     double sqrtd = sqrt(disc);
+
     *x1 = (-b + sqrtd)/(2*a);
     *x2 = (-b - sqrtd)/(2*a);
+
     return SS_TWO_ROOTS;
 }
 
@@ -163,8 +148,10 @@ int SolveAC (double a, double c, double* x1, double* x2)   // if b == 0
     if (-c/a < 0) {
         return SS_NO_ROOTS;
     }
+
     *x1 = sqrt(-c/a);
     *x2 = -*x1;
+
     return SS_TWO_ROOTS;
 }
 
@@ -180,6 +167,7 @@ int SolveAB (double a, double b, double* x1, double* x2)
 {
     *x1 = 0;
     *x2 = -b/a;
+
     return SS_TWO_ROOTS;
 }
 
@@ -218,59 +206,56 @@ int Test(int nTest, struct coeffsStruct structData)
 
 /**
 * @brief        Функция, заполняющая массив заданными данными для тестирования
-* @param tests  Массив с информация про коэффициенты и корни
 */
-void CreateTests (coeffsStruct tests[])
+void CreateTests ()
 {
-    const int test1  = 0;
-    const int test2  = 1;
-    const int test3  = 2;
-    const int test4  = 3;
-    const int test5  = 4;
-    const int test6  = 5;
-    const int test7  = 6;
-    const int test8  = 7;
-    const int test9  = 8;
-    const int test10 = 9;
+    coeffsStruct tests[] = {
 
-    tests[test1]  = {.a = 1,      .b = -3,       .c = 2,      .x1_expected = 1,          //два корня
-                     .x2_expected = 2,          .nRoots_expected = 2};
+    {.a = 1,      .b = -3,       .c = 2,      .x1_expected = 1,          .x2_expected = 2,          //два корня
+     .nRoots_expected = 2},
 
-    tests[test2]  = {.a = 0,      .b = 0,        .c = 0,      .x1_expected = NAN,        //бесконечно корней
-                     .x2_expected = NAN,        .nRoots_expected = SS_INF_ROOTS};
 
-    tests[test3]  = {.a = 2,      .b = 4,        .c = 2,      .x1_expected = -1,         //1 корень, D = 0
-                     .x2_expected = NAN,        .nRoots_expected = 1};
+    {.a = 0,      .b = 0,        .c = 0,      .x1_expected = NAN,        .x2_expected = NAN,        //бесконечно корней
+     .nRoots_expected = SS_INF_ROOTS},
 
-    tests[test4]  = {.a = 18,     .b = 4,        .c = 41,     .x1_expected = NAN,        //0 корней, D < 0
-                     .x2_expected = NAN,        .nRoots_expected = 0};
 
-    tests[test5]  = {.a = 0,      .b = 16,       .c = 21,     .x1_expected = -1.3125,    //линейное
-                     .x2_expected = NAN,        .nRoots_expected = 1};
+    {.a = 2,      .b = 4,        .c = 2,      .x1_expected = -1,         .x2_expected = NAN,        //1 корень, D = 0
+     .nRoots_expected = 1},
 
-    tests[test6]  = {.a = 2.1,    .b = 3.85,     .c = -16.84, .x1_expected = 2.059795,   //дробные
-                     .x2_expected = -3.893129,  .nRoots_expected = 2};
+    {.a = 18,     .b = 4,        .c = 41,     .x1_expected = NAN,        .x2_expected = NAN,        //0 корней, D < 0
+     .nRoots_expected = 0},
 
-    tests[test7]  = {.a = 0.0008, .b = 0.000016, .c = -0.032, .x1_expected = 6.31456322, //маленькие значения
-                     .x2_expected = -6.3345632, .nRoots_expected = 2};
+    {.a = 0,      .b = 16,       .c = 21,     .x1_expected = -1.3125,    .x2_expected = NAN,        //линейное
+     .nRoots_expected = 1},
 
-    tests[test8]  = {.a = 4,      .b = 0,        .c = 60,     .x1_expected = NAN,        //b=0, 0 корней
-                     .x2_expected = NAN,        .nRoots_expected=0};
+    {.a = 2.1,    .b = 3.85,     .c = -16.84, .x1_expected = 2.059795,   .x2_expected = -3.893129,  //дробные
+     .nRoots_expected = 2},
 
-    tests[test9]  = {.a = 125,    .b = 0,        .c = -64,    .x1_expected = 0.7155418,
-                     .x2_expected = -0.7155418, .nRoots_expected=2};                     //b=0, 2 корня
+    {.a = 0.0008, .b = 0.000016, .c = -0.032, .x1_expected = 6.31456322, .x2_expected = -6.3345632, //маленькие значения
+     .nRoots_expected = 2},
 
-    tests[test10] = {.a = 45,     .b = 12,       .c = 0,      .x1_expected = 0,
-                     .x2_expected = -0.266667,  .nRoots_expected = 2};                   //c=0, 2 корня
+    {.a = 4,      .b = 0,        .c = 60,     .x1_expected = NAN,        .x2_expected = NAN,        //b=0, 0 корней
+     .nRoots_expected=0},
+
+    {.a = 125,    .b = 0,        .c = -64,    .x1_expected = 0.7155418,  .x2_expected = -0.7155418, //b=0, 2 корня
+     .nRoots_expected=2},
+
+    {.a = 45,     .b = 12,       .c = 0,      .x1_expected = 0,          .x2_expected = -0.266667,  //c=0, 2 корня
+     .nRoots_expected = 2}
+    };
+
+    RunAllTests(tests);
 }
 
 /**
-* @brief                     Функция, запускающая тесты
-* @param coeffsStruct tests  Массив с данными для тестов
+* @brief        Функция, запускающая тесты
+* @param tests  Массив с данными для тестов
 */
  void RunAllTests(coeffsStruct tests[])
  {
-       for (int i = 0; i < sz; ++i) {
+       const int nTests = 10;
+
+       for (int i = 0; i < nTests; ++i) {
             if (Test(i+1, tests[i]) == 0) {
                 printf("Test %2d completed successfully\n", i+1);
             }
@@ -285,8 +270,10 @@ void CreateTests (coeffsStruct tests[])
  {
     printf("If you want to solve a square equation enter 1,\n"
            "If you want to run tests enter 0:\n");
+
     int choice = 0;
     scanf("%d", &choice);
+
     return choice;
  }
 
@@ -318,7 +305,7 @@ void input (double *a, double *b, double *c)
 * @param x1     Первый корень
 * @param x2     Второй корень
 */
-void output(int nRoots, double x1, double x2)
+void output (int nRoots, double x1, double x2)
 {
     switch (nRoots)
     {
@@ -362,6 +349,7 @@ bool CompareZero(double a)
  void swapDouble (double *a, double *b)
  {
     double temp = 0;
+
     temp = *a;
     *a = *b;
     *b = temp;
