@@ -1,18 +1,21 @@
 #include <stdio.h>
 #include <math.h>
 #include <assert.h>
+#include <string.h>
 
-#include "ChooseAction.h"
+//#include "ChooseAction.h"
 #include "InOutput.h"
 #include "Solve.h"
 #include "Testing.h"
-#include "BufferClear.h"
+#include "Globals.h"
 
-int main()
+int main(int argc, const char* argv[])
 {
-    if (choose() == 1) {
-
-        BufferClear();
+    if (argc < 2) {
+        printf(RED "Error, too little arguments\n" COLOUR_RESET);
+        return 0;
+    }
+    if (strcmp(argv[1], "equation") == 0) {
 
         double a = NAN, b = NAN, c = NAN;
 
@@ -29,7 +32,7 @@ int main()
 
         output(nRoots, x1, x2);
 
-    } else {
+    } else if (strcmp(argv[1], "test") == 0) {
 
         CreateTests();
     }

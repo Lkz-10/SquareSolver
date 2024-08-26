@@ -41,7 +41,7 @@ int SolveLine (double b, double c, double* x1)
     if (CompareZero(b)) {                                         // b == 0
             return (CompareZero(c))? SS_INF_ROOTS : SS_NO_ROOTS;  // c == 0
         }
-        *x1 = -c/b;
+        *x1 = 0 - c/b;
         return SS_ONE_ROOT;
 }
 

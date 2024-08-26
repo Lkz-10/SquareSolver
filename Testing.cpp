@@ -8,7 +8,7 @@
 #include "ComparingDoubles.h"
 #include "Globals.h"
 
-const int nTests = 10;
+const int global_nTests = 10;
 
 int Test(int nTest, struct coeffsStruct* structData)
 {
@@ -29,8 +29,9 @@ int Test(int nTest, struct coeffsStruct* structData)
         (!x2_nan && !CompareZero(x2 - structData->x2_expected))) {
 
         printf(RED "Error Test %d: a = %lg, b = %lg, c = %lg, nRoots = %d, x1 = %lg, x2 = %lg\n"
-               "Expected: nRoots = %d, x1 = %lg, x2 = %lg\n" RESET_COLOUR, nTest, structData->a, structData->b, structData->c,
-               nRoots, x1, x2, structData->nRoots_expected, structData->x1_expected, structData->x2_expected);
+               "Expected: nRoots = %d, x1 = %lg, x2 = %lg\n" COLOUR_RESET,
+               nTest, structData->a, structData->b, structData->c, nRoots, x1, x2,
+               structData->nRoots_expected, structData->x1_expected, structData->x2_expected);
 
         return -1;
     }
@@ -39,26 +40,26 @@ int Test(int nTest, struct coeffsStruct* structData)
 
 void CreateTests ()
 {
-    coeffsStruct tests[nTests] = {};
+    coeffsStruct tests[global_nTests] = {};
 
-    char line[100];
-    FILE* ptr;
-    ptr = fopen("TestData.txt","r");
+    char line[100] = "";
+    FILE* ptr = fopen("TestData.txt","r");
 
-    if (ptr == NULL) printf(RED "Error while opening file\n" RESET_COLOUR);
+    if (ptr == NULL) printf(RED "Error while opening file\n" COLOUR_RESET);
 
-    int i = 0;
+    int curr_test = 0;
 
     while (fgets(line, sizeof(line), ptr) != NULL) {
 
-        assert(i >= 0 && i < nTests);
+        assert(curr_test >= 0 && curr_test < global_nTests);
 
-        if (sscanf(line, "%lg %lg %lg %lg %lg %d", &(tests[i].a), &(tests[i].b), &(tests[i].c),
-            &(tests[i].x1_expected), &(tests[i].x2_expected), &(tests[i].nRoots_expected)) != 6) {
+        if (sscanf(line, "%lg %lg %lg %lg %lg %d", &(tests[curr_test].a), &(tests[curr_test].b),
+                   &(tests[curr_test].c), &(tests[curr_test].x1_expected), &(tests[curr_test].x2_expected),
+                   &(tests[curr_test].nRoots_expected)) != 6) {
 
-            printf(RED "Error while reading data for test %d\n" RESET_COLOUR, i+1);
+            printf(RED "Error while reading data for test %d\n" COLOUR_RESET, curr_test+1);
         }
-        i++;
+        curr_test++;
     }
 
     fclose(ptr);
@@ -70,16 +71,16 @@ void RunAllTests(coeffsStruct tests[])
  {
        int success = 0;
 
-       for (int i = 0; i < nTests; ++i) {
+       for (int i = 0; i < global_nTests; ++i) {
             if (Test(i+1, &(tests[i])) == 0) {
                 success++;
             }
        }
 
-       if (success == nTests) {
-            printf(GREEN "All tests completed successfully\n" RESET_COLOUR);
+       if (success == global_nTests) {
+            printf(GREEN "All tests completed successfully\n" COLOUR_RESET);
        } else {
-            printf(GREEN "%d tests completed successfully\n" RESET_COLOUR, success);
+            printf(GREEN "%d tests completed successfully\n" COLOUR_RESET, success);
        }
  }
 
