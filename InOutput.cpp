@@ -12,11 +12,11 @@ void input (double *a, double *b, double *c)
     assert(c);
     assert(a != b && a != c && b != c);
 
-    printf("Enter the coefficients:\n");
+    printf(BLUE "Enter the coefficients:\n" RESET_COLOUR);
 
     while (scanf("%lg %lg %lg", a, b, c) != 3) {
         BufferClear();
-        printf("Error, Enter three coefficients:\n");
+        printf(RED "Error, Enter three coefficients:\n" RESET_COLOUR);
     }
 
 }
@@ -26,22 +26,22 @@ void output (int nRoots, double x1, double x2)
     switch (nRoots)
     {
         case SS_NO_ROOTS:
-            printf("No roots\n");
+            printf(GREEN "No roots\n" RESET_COLOUR);
             break;
 
         case SS_ONE_ROOT:
-            printf("One root, x = %lg\n", x1);
+            printf(GREEN "One root, x = %lg\n" RESET_COLOUR, x1);
             break;
 
         case SS_TWO_ROOTS:
-            printf("Two roots, x1 = %lg, x2 = %lg\n", x1, x2);
+            printf(GREEN "Two roots, x1 = %lg, x2 = %lg\n" RESET_COLOUR, x1, x2);
             break;
 
         case SS_INF_ROOTS:
-            printf("Infinite amount of roots\n");
+            printf(GREEN "Infinite amount of roots\n" RESET_COLOUR);
             break;
 
         default:
-            printf("ERROR\n");
+            printf(RED "ERROR\n" RESET_COLOUR);
     }
 }

@@ -1,11 +1,14 @@
 #include <stdio.h>
 #include <math.h>
+#include <assert.h>
 
 #include "Testing.h"
 #include "Solve.h"
 #include "Swap.h"
 #include "ComparingDoubles.h"
 #include "Globals.h"
+
+const int nTests = 10;
 
 int Test(int nTest, struct coeffsStruct* structData)
 {
@@ -25,8 +28,8 @@ int Test(int nTest, struct coeffsStruct* structData)
     if (nRoots != structData->nRoots_expected || (!x1_nan && !CompareZero(x1 - structData->x1_expected)) ||
         (!x2_nan && !CompareZero(x2 - structData->x2_expected))) {
 
-        printf("Error Test %d: a = %lg, b = %lg, c = %lg, nRoots = %d, x1 = %lg, x2 = %lg\n"
-               "Expected: nRoots = %d, x1 = %lg, x2 = %lg\n", nTest, structData->a, structData->b, structData->c,
+        printf(RED "Error Test %d: a = %lg, b = %lg, c = %lg, nRoots = %d, x1 = %lg, x2 = %lg\n"
+               "Expected: nRoots = %d, x1 = %lg, x2 = %lg\n" RESET_COLOUR, nTest, structData->a, structData->b, structData->c,
                nRoots, x1, x2, structData->nRoots_expected, structData->x1_expected, structData->x2_expected);
 
         return -1;
@@ -36,47 +39,35 @@ int Test(int nTest, struct coeffsStruct* structData)
 
 void CreateTests ()
 {
-    coeffsStruct tests[] = {
+    coeffsStruct tests[nTests] = {};
 
-    {.a = 1,      .b = -3,       .c = 2,      .x1_expected = 1,          .x2_expected = 2,          //��� �����
-     .nRoots_expected = 2},
+    char line[100];
+    FILE* ptr;
+    ptr = fopen("TestData.txt","r");
 
+    if (ptr == NULL) printf(RED "Error while opening file\n" RESET_COLOUR);
 
-    {.a = 0,      .b = 0,        .c = 0,      .x1_expected = NAN,        .x2_expected = NAN,        //���������� ������
-     .nRoots_expected = SS_INF_ROOTS},
+    int i = 0;
 
+    while (fgets(line, sizeof(line), ptr) != NULL) {
 
-    {.a = 2,      .b = 4,        .c = 2,      .x1_expected = -1,         .x2_expected = NAN,        //1 ������, D = 0
-     .nRoots_expected = 1},
+        assert(i >= 0 && i < nTests);
 
-    {.a = 18,     .b = 4,        .c = 41,     .x1_expected = NAN,        .x2_expected = NAN,        //0 ������, D < 0
-     .nRoots_expected = 0},
+        if (sscanf(line, "%lg %lg %lg %lg %lg %d", &(tests[i].a), &(tests[i].b), &(tests[i].c),
+            &(tests[i].x1_expected), &(tests[i].x2_expected), &(tests[i].nRoots_expected)) != 6) {
 
-    {.a = 0,      .b = 16,       .c = 21,     .x1_expected = -1.3125,    .x2_expected = NAN,        //��������
-     .nRoots_expected = 1},
+            printf(RED "Error while reading data for test %d\n" RESET_COLOUR, i+1);
+        }
+        i++;
+    }
 
-    {.a = 2.1,    .b = 3.85,     .c = -16.84, .x1_expected = 2.059795,   .x2_expected = -3.893129,  //�������
-     .nRoots_expected = 2},
-
-    {.a = 0.0008, .b = 0.000016, .c = -0.032, .x1_expected = 6.31456322, .x2_expected = -6.3345632, //��������� ��������
-     .nRoots_expected = 2},
-
-    {.a = 4,      .b = 0,        .c = 60,     .x1_expected = NAN,        .x2_expected = NAN,        //b=0, 0 ������
-     .nRoots_expected=0},
-
-    {.a = 125,    .b = 0,        .c = -64,    .x1_expected = 0.7155418,  .x2_expected = -0.7155418, //b=0, 2 �����
-     .nRoots_expected=2},
-
-    {.a = 45,     .b = 12,       .c = 0,      .x1_expected = 0,          .x2_expected = -0.266667,  //c=0, 2 �����
-     .nRoots_expected = 2}
-    };
+    fclose(ptr);
 
     RunAllTests(tests);
 }
 
 void RunAllTests(coeffsStruct tests[])
  {
-       const int nTests = 10;
        int success = 0;
 
        for (int i = 0; i < nTests; ++i) {
@@ -86,8 +77,9 @@ void RunAllTests(coeffsStruct tests[])
        }
 
        if (success == nTests) {
-            printf("All tests completed successfully\n");
+            printf(GREEN "All tests completed successfully\n" RESET_COLOUR);
        } else {
-            printf("%d tests completed successfully\n", success);
+            printf(GREEN "%d tests completed successfully\n" RESET_COLOUR, success);
        }
  }
+
