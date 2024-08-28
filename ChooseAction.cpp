@@ -2,6 +2,7 @@
 
 #include "ChooseAction.h"
 #include "Globals.h"
+#include "OutputColours.h"
 
 int choose()
  {

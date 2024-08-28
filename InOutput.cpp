@@ -4,6 +4,7 @@
 #include "InOutput.h"
 #include "Globals.h"
 #include "BufferClear.h"
+#include "OutputColours.h"
 
 void input (double *a, double *b, double *c)
 {

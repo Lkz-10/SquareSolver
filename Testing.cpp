@@ -1,12 +1,14 @@
 #include <stdio.h>
 #include <math.h>
 #include <assert.h>
+#include <stdlib.h>
 
 #include "Testing.h"
 #include "Solve.h"
 #include "Swap.h"
 #include "ComparingDoubles.h"
 #include "Globals.h"
+#include "OutputColours.h"
 
 const int global_nTests = 10;
 
@@ -42,14 +44,18 @@ void CreateTests ()
 {
     coeffsStruct tests[global_nTests] = {};
 
-    char line[100] = "";
-    FILE* ptr = fopen("TestData.txt","r");
+    int line_sz = 50;
 
-    if (ptr == NULL) printf(RED "Error while opening file\n" COLOUR_RESET);
+    char* line = (char*) calloc(line_sz, sizeof(char));
+    assert(line);
+
+    FILE* file_ptr = fopen("TestData.txt","r");
+
+    if (file_ptr == NULL) printf(RED "Error while opening file\n" COLOUR_RESET);
 
     int curr_test = 0;
 
-    while (fgets(line, sizeof(line), ptr) != NULL) {
+    while (fgets(line, line_sz, file_ptr) != NULL) {
 
         assert(curr_test >= 0 && curr_test < global_nTests);
 
@@ -62,7 +68,8 @@ void CreateTests ()
         curr_test++;
     }
 
-    fclose(ptr);
+    fclose(file_ptr);
+    free(line);
 
     RunAllTests(tests);
 }

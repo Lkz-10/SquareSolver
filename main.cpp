@@ -8,6 +8,7 @@
 #include "Solve.h"
 #include "Testing.h"
 #include "Globals.h"
+#include "OutputColours.h"
 
 int main(int argc, const char* argv[])
 {
@@ -35,5 +36,8 @@ int main(int argc, const char* argv[])
     } else if (strcmp(argv[1], "test") == 0) {
 
         CreateTests();
+
+    } else {
+        printf(RED "Error while chosing mode, enter \"test\" or \"equation\"\n" COLOUR_RESET);
     }
 }
